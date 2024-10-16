@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickAid MTL</title>
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-ambulance"></i> QuickAid MTL</h1>
+            <p>Emergency Medical Service</p>
+        </header>
+        <main>
+            <section class="overview">
+                <h2>Rapid Response, Immediate Care</h2>
+                <p>QuickAid MTL connects you with the nearest paramedics in real time. Whether you're a patient needing urgent assistance or a paramedic ready to respond, QuickAid MTL ensures fast, and reliable emergency medical services in Montreal.</p>
+            </section>
+            <section class="login-section">
+                <div class="role-toggle">
+                    <button id="patientToggle" class="active">Patient</button>
+                    <button id="paramedicToggle">Paramedic</button>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i></label>
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+            </section>
+        </main>
+        <footer>
+            <p>© 2025 QuickAid MTL | Built with care by <strong>Marc Abou Abdallah</strong></p>
+        </footer>
+    </div>
+    <script src="static/js/index.js"></script>
+</body>
+</html>

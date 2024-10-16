@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Heat Map - QuickAid MTL</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="/static/css/requests.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-ambulance"></i> QuickAid MTL</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{role}}.html?token={{token}}" class="nav-link" data-page="{{role}}">Dashboard</a></li>
+                    <li><a href="{{role}}-history.html?token={{token}}" class="nav-link" data-page="{{role}}-history">Emergency History</a></li>
+                    <li><a href="emergencies.html?token={{token}}" class="nav-link" data-page="emergencies">Emergency Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <section class="map-info">
+                <h2><i class="fas fa-exclamation-circle"></i> Emergency Heat Map</h2>
+                <p>
+                    Track the status of emergencies across Montreal with our intuitive heat map, updated in real-time to show areas of highest urgency.<br> <br>
+                    <span style="font-weight: bold;">🟥 Red spots</span> represent <strong>pending emergencies</strong>, highlighting areas where immediate attention is needed.<br>
+                    <span style="font-weight: bold;">🟩 Green spots</span> represent <strong>accepted emergencies</strong>, where paramedics are already en route.<br> <br>
+                    Stay informed and help us ensure faster response times <i class="fas fa-clock"></i> <br>
+                  </p>
+            </section>
+
+            <div id="map" data-mapboxtoken="{{ mapboxToken }}"></div>
+        </main>
+        <footer>
+            <p>© 2025 QuickAid MTL | Built with care by <strong>Marc Abou Abdallah</strong></p>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/static/js/requests.js" defer></script>
+    <script>
+        // Handle active nav link
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.dataset.page === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+</html>
