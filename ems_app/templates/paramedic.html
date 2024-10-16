@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Paramedic {{ userId }} </title>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <style>
+        #map {
+            width: 90%;
+            height: 500px;
+            margin: auto;
+        }
+    </style>
+
+</head>
+
+<body data-userId="{{ userId }}"> <!--data attribute to associate specific values to be use in JS-->
+    <h1>Hello Paramedic {{ userId }}</h1>
+
+    <h3>Information: </h3>
+    <div id="paramedicDetails"></div>
+
+    <h4 id="notification">Waiting for requests</h4>
+
+    <button onclick="AcceptHelp()">
+        Help Patient
+    </button>
+
+    <div id="map"></div>
+
+    <div class="geocoder" id="geocoder"></div>
+
+    
+    <script src="/socket.io/socket.io.js"></script> <!--Socket.IO client-side library-->
+
+    <!--AXIOS: Http client to make HttpRequests
+    Promise-based -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- JS file for code functionality-->
+    <script src="/static/js/paramedic.js" defer></script>
+    
+</body>
+</html>

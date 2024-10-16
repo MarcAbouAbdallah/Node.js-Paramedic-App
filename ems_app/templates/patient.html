@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Patient {{ userId }} </title>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <script src="https://unpkg.com/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css" type="text/css">
+    <style>
+        #map {
+            width: 90%;
+            height: 500px;
+            margin: auto;
+        }
+        .geocoder {
+        position: absolute;
+        top: 40px; /* Keep it at 10px from the top */
+        right: 10px; /* Move it to the right */
+        z-index: 1;
+        background: white;
+        padding: 10px;
+        border-radius: 4px;
+        box-shadow: 0 1px 15px rgba(0, 0, 0, 0.5);
+    }
+    </style>
+
+</head>
+
+<body data-userId="{{ userId }}">
+    <h1>Hello Patient {{ userId }}</h1>
+
+    <h4 id="notification"></h4>
+    
+    <button onclick="requestHelp()">
+        Request Medical Help
+    </button>
+
+    
+    <div id="map"></div>
+
+    <div class="geocoder" id="geocoder"></div>
+
+    <script src="/socket.io/socket.io.js"></script> <!--Socket.IO client-side library-->
+
+    <!--AXIOS: Http client to make HttpRequests
+    Promise-based -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- JS file for functionality-->
+    <script src="/static/js/patient.js" defer></script>
+
+    
+</body>
+</html>
