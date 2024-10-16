@@ -1,6 +1,7 @@
 
 // Mapbox access token
 // mapboxgl.accessToken = ....
+mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
 
 const socket = io(); //object to emit events to and listen to events from the server
 const userId = document.body.getAttribute("data-userId");
