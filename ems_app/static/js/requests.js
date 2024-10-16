@@ -1,4 +1,7 @@
 
+// Mapbox access token
+// mapboxgl.accessToken = ....
+
 // API request to fetch emergencies
 axios.get("/emergencies/info")
     .then( (res) => {
