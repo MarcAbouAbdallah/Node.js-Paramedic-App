@@ -31,6 +31,10 @@ router.get('/paramedic.html', (req,res) => {
     })
 })
 
+router.get('/', (req,res) => {
+    res.render('index.html')
+})
+
 // Get paramedic details given userId
 router.get('/paramedics/info', async(req,res) => {
     const paramedicDetails = await dbFuntions.getParamedicInfo(req.query.userId);

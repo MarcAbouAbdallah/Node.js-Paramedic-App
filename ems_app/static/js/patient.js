@@ -1,6 +1,6 @@
 
 // Mapbox access token
-// mapboxgl.accessToken = ....
+mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
 
 const socket = io(); //object to emit events to and listen to events from the server
 const userId = document.body.getAttribute("data-userId");
@@ -30,9 +30,11 @@ socket.on("request-accepted", (paramedicInfo) => {
     paramedicDetails = paramedicInfo;
     console.log(`Paramedic ${paramedicDetails.userId} accepted your emergency request`)
 
-    document.getElementById("notification").innerHTML = `
-    ${paramedicDetails.displayName} is en route from ${paramedicDetails.location.address} and will reach you shortly. <br>
+    const notification = document.getElementById("notification");
+    notification.textContent = `
+    ${paramedicDetails.displayName} is en route from ${paramedicDetails.location.address} and will reach you shortly. 
     For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}`
+    notification.style.display = "block"
 
     // Add a marker to show paramedic's location
     new mapboxgl.Marker({
@@ -41,7 +43,6 @@ socket.on("request-accepted", (paramedicInfo) => {
     .setLngLat([paramedicDetails.location.longitude, paramedicDetails.location.latitude])
     .addTo(map);
 });
-
 
 
 

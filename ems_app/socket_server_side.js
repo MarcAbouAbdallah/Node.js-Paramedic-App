@@ -24,12 +24,15 @@ function setUp(server) {
                 coordinates: [emergencyInfo.location.longitude, emergencyInfo.location.latitude],
                 address: emergencyInfo.location.address
             }
-            const EmergencyTime = new Date();
-            const EmergencyId = new mongoose.Types.ObjectId(); // Generate a unique emergency Id
-            emergencyInfo.EmergencyId = EmergencyId;
+            const emergencyTime = new Date();
+            const emergencyId = new mongoose.Types.ObjectId(); // Generate a unique emergency Id
+
+            // Data to be passed to event
+            emergencyInfo.emergencyId = emergencyId;
+            emergencyInfo.emergencyTime = emergencyTime;
             
             // Save Emergency details in DB
-            await dbFunctions.saveEmergency(EmergencyId, EmergencyTime, location, emergencyInfo.patientId, "pending");
+            await dbFunctions.saveEmergency(emergencyId, emergencyTime, location, emergencyInfo.patientId, "pending");
 
             // Get paramedics within 2 km of emergency location
             const paramedics = await dbFunctions.getNearestParamedics(location.coordinates, 2000); 
@@ -45,16 +48,19 @@ function setUp(server) {
         })
 
         
-        // Listent to "request-accepted" event from paramedics (client-side)
+        // Listen to "request-accepted" event from paramedics (client-side)
         socket.on("request-accepted", async(info) => {
-            const EmergencyId = info.emergencyInfo.EmergencyId;
+            const emergencyId = info.emergencyId;
+
+            // Fetch the emergency
+            emergencyInfo = await dbFunctions.getEmergency(emergencyId)
 
             // Update details of the emergency instance
-            await dbFunctions.updateEmergency(EmergencyId, info.paramedicInfo.userId, "accepted");
+            await dbFunctions.updateEmergency(emergencyId, info.paramedicInfo.userId, "accepted");
 
             // Fire a "request-accepted" signal in the patient room and send paramedic details to display
             console.log(`Paramedic ${info.paramedicInfo.userId} accepted the request`)
-            io.sockets.in(info.emergencyInfo.patientId).emit("request-accepted", info.paramedicInfo);
+            io.sockets.in(emergencyInfo.patientId).emit("request-accepted", info.paramedicInfo);
         })
 
     })

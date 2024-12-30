@@ -3,45 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Paramedic {{ userId }} </title>
-
+    <title>Paramedic Dashboard</title>
+    <link rel="stylesheet" href="static/css/paramedic.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
-    <style>
-        #map {
-            width: 90%;
-            height: 500px;
-            margin: auto;
-        }
-    </style>
-
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
-
-<body data-userId="{{ userId }}"> <!--data attribute to associate specific values to be use in JS-->
-    <h1>Hello Paramedic {{ userId }}</h1>
-
-    <h3>Information: </h3>
-    <div id="paramedicDetails"></div>
-
-    <h4 id="notification">Waiting for requests</h4>
-
-    <button onclick="AcceptHelp()">
-        Help Patient
-    </button>
-
-    <div id="map"></div>
-
-    <div class="geocoder" id="geocoder"></div>
-
-    
-    <script src="/socket.io/socket.io.js"></script> <!--Socket.IO client-side library-->
-
-    <!--AXIOS: Http client to make HttpRequests
-    Promise-based -->
+<body data-userId="{{ userId }}">
+    <div class="background-animation"></div>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-ambulance"></i> EMS App</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">Emergency History</a></li>
+                    <li><a href="#">Emergency Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <main>
+            <h2>Welcome, Paramedic {{ userId }}</h2>
+            <div id="notification" class="notification">Waiting for requests</div>
+            <div class="dashboard-grid">
+                <div class="map-section">
+                    <h3>Emergency Map</h3>
+                    <div id="map-container">
+                        <div id="map"></div>
+                    </div>
+                </div>
+                <div class="requests-section">
+                    <h3>Emergency Requests</h3>
+                    <table id="emergency-requests">
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Location</th>
+                                <th>Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Emergency requests will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 EMS App. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <!-- JS file for code functionality-->
     <script src="/static/js/paramedic.js" defer></script>
-    
 </body>
 </html>
+
+
