@@ -3,55 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Patient {{ userId }} </title>
-
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="static/css/patient.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <script src="https://unpkg.com/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css" type="text/css">
-    <style>
-        #map {
-            width: 90%;
-            height: 500px;
-            margin: auto;
-        }
-        .geocoder {
-        position: absolute;
-        top: 40px; /* Keep it at 10px from the top */
-        right: 10px; /* Move it to the right */
-        z-index: 1;
-        background: white;
-        padding: 10px;
-        border-radius: 4px;
-        box-shadow: 0 1px 15px rgba(0, 0, 0, 0.5);
-    }
-    </style>
-
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
-
 <body data-userId="{{ userId }}">
-    <h1>Hello Patient {{ userId }}</h1>
-
-    <h4 id="notification"></h4>
-    
-    <button onclick="requestHelp()">
-        Request Medical Help
-    </button>
-
-    
-    <div id="map"></div>
-
-    <div class="geocoder" id="geocoder"></div>
-
-    <script src="/socket.io/socket.io.js"></script> <!--Socket.IO client-side library-->
-
-    <!--AXIOS: Http client to make HttpRequests
-    Promise-based -->
+    <div class="background-animation"></div>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-ambulance"></i> EMS App</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">Emergency History</a></li>
+                    <li><a href="#">Emergency Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <main>
+            <h2>Welcome, Patient {{ userId }}</h2>
+            <div id="notification" class="notification"></div>
+            <button id="requestHelpBtn" class="primary-btn" onclick="requestHelp()">
+                <i class="fas fa-first-aid"></i> Request Medical Help
+            </button>
+            <div id="map-container">
+                <div id="map"></div>
+                <div id="geocoder" class="geocoder"></div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 EMS App. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <!-- JS file for functionality-->
     <script src="/static/js/patient.js" defer></script>
-
-    
 </body>
 </html>

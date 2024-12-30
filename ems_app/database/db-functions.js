@@ -53,12 +53,18 @@ function saveEmergency(requestId, requestTime, location, patientId, status){
 
 }
 
-// Update emergency after request is accepted
+// Update emergency status after request is accepted
 function updateEmergency(emergencyId, paramedicId, status){
     return Emergency.findOneAndUpdate({"_id": emergencyId }, {
         //details to udpate
         status: status,
         paramedicId: paramedicId
+    }).catch(error => {console.log(error)})
+}
+
+// Fetch a specific emergency instance
+function getEmergency(emergencyId) {
+    return Emergency.findOne({"_id": emergencyId
     }).catch(error => {console.log(error)})
 }
 
@@ -82,9 +88,9 @@ async function getEmergencies() {
 }
 
 
-
 exports.getNearestParamedics = getNearestParamedics;
 exports.getParamedicInfo = getParamedicInfo;
 exports.saveEmergency = saveEmergency;
 exports.updateEmergency = updateEmergency;
 exports.getEmergencies = getEmergencies;
+exports.getEmergency = getEmergency;

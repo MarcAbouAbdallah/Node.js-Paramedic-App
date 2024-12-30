@@ -1,12 +1,13 @@
 
 // Mapbox access token
-// mapboxgl.accessToken = ....
+mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
 
 const socket = io(); //object to emit events to and listen to events from the server
 const userId = document.body.getAttribute("data-userId");
+const notificationElement = document.getElementById('notification');
+const emergencyRequestsTable = document.getElementById('emergency-requests').getElementsByTagName('tbody')[0];
 
 socket.emit("join", {userId: userId}); //Send a join signal to the server to join a room named after userId
-
 
 
 /* Axios API to make Http requests
@@ -23,12 +24,13 @@ axios.get(`/paramedics/info?userId=${userId}`)
             latitude: paramedicInfo.location.coordinates[1]
         }
 
-        //display Info
+        /*display Info
         document.getElementById("paramedicDetails").innerHTML = `
             Name: ${paramedicInfo.displayName} <br>
             Address: ${paramedicInfo.location.address} <br>
             Phone: ${paramedicInfo.phone}
             `;
+        */
 
         // Initialize the map
         map = new mapboxgl.Map({
@@ -56,28 +58,54 @@ let emergencyDetails = {};
 socket.on("emergency-request", (emergencyInfo) => {
 
     console.log(`Paramedic ${userId} received the emergency request`)
-    emergencyDetails = emergencyInfo;
+    console.log(`EMERGENCY ${JSON.stringify(emergencyInfo)}`)
 
-    document.getElementById("notification").innerHTML = 
-    `Urgent: Patient ${emergencyDetails.patientId} needs assistance immediately\! <br>
-    Location: ${emergencyDetails.location.address}`
+    // Latest notification
+    notificationElement.innerHTML = 
+    `Urgent: Patient ${emergencyInfo.patientId} needs assistance immediately\! <br>
+    Location: ${emergencyInfo.location.address}`
 
-    // Marker to show the emergency location
+    // Marker to show the new emergency location
     new mapboxgl.Marker({
         element: createCustomMarker('url(/static/images/patient.png)'), // Custom patient marker
     })
-    .setLngLat([emergencyDetails.location.longitude, emergencyDetails.location.latitude])
+    .setLngLat([emergencyInfo.location.longitude, emergencyInfo.location.latitude])
     .addTo(map);
+
+    // Add new row to the emergency table
+    const newRow = emergencyRequestsTable.insertRow();
+    newRow.innerHTML = `
+        <td>${emergencyInfo.patientId}</td>
+        <td>${emergencyInfo.location.address}</td>
+        <td>${emergencyInfo.emergencyTime}</td>
+        <td><button class="accept-btn" data-emergency-id="${emergencyInfo.emergencyId}">Accept</button></td>
+    `;
 
 })
 
+// Accept buttons
+emergencyRequestsTable.addEventListener('click', (event) => {
+    if (event.target.classList.contains('accept-btn')) {
+        AcceptHelp(event.target.getAttribute('data-emergency-id'));
+    }
+});
+
 
 // Send a "request-accepted" signal to the server
-function AcceptHelp(){
+function AcceptHelp(emergencyId){
     socket.emit("request-accepted", {
-        emergencyInfo: emergencyDetails,
+        emergencyId: emergencyId,
         paramedicInfo: paramedicInfo
     });
+
+    const acceptButton = document.querySelector(`button[data-emergency-id='${emergencyId}']`);
+    acceptButton.textContent = 'Accepted';
+    acceptButton.disabled = true;
+    acceptButton.classList.remove('accept-btn');
+    acceptButton.classList.add('accepted-btn');
+
+    // Update the notification
+    notificationElement.textContent = `You have accepted the emergency with Id ${emergencyId}`;
 }
 
 
