@@ -14,16 +14,59 @@ document.addEventListener('DOMContentLoaded', () => {
         patientToggle.classList.remove('active');
     });
 
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const role = patientToggle.classList.contains('active') ? 'patient' : 'paramedic';
 
         // Here you would typically send a request to your server to authenticate
-        console.log('Login attempt:', { username, password, role });
-        alert(`Login attempt for ${role}: ${username}`);
-        // After successful login, you would redirect to the appropriate dashboard
+        try {
+            // Send login request to the server
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, role })
+            });
+    
+            if (!response.ok) {
+                const error = await response.json();
+                alert(error.message);
+                return;
+            }
+    
+            const { token } = await response.json();
+            console.log('JWT Token:', token);
+    
+            // Store the token securely (localStorage)
+            localStorage.setItem('authToken', token);
+    
+            // Make GET request with the token to the appropriate page
+            let pageUrl = role === 'patient' ? '/patient.html' : '/paramedic.html';
+            
+            // Make the GET request with Authorization header
+            const pageResponse = await fetch(pageUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            // Check if the request was successful
+            if (!pageResponse.ok) {
+                const error = await pageResponse.json();
+                alert(error.message);
+                return;
+            }
+
+            console.log('Login attempt:', { username, password, role });
+            alert(`Login attempt for ${role}: ${username}`);
+        } catch (error) {
+            console.error("Login Failed", error);
+            alert("Please try login again")
+        }
     });
 
     // Background animation
