@@ -3,12 +3,13 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const dbFuntions = require('./database/db-functions.js');
 const models = require('./database/models.js');
 const Paramedic = models.Paramedic;
 const Patient = models.Patient;
 
-JWT_secret = 'my_secret_token'
+JWT_SECRET = 'my_secret_token'
 
 // Login (JWT)
 router.post('/login', async (req, res) => {
@@ -22,11 +23,11 @@ router.post('/login', async (req, res) => {
             user = await Paramedic.findOne({ username });
         }
         if (!user) {
-            return res.status(401).json({ error: 'Authentication failed' });
+            return res.status(401).json({ error: 'Invalid Username' });
         }
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ error: 'Authentication failed' });
+            return res.status(401).json({ error: 'Invalid Password' });
         }
         // Generate a JWT
         const token = jwt.sign(
@@ -34,9 +35,18 @@ router.post('/login', async (req, res) => {
             JWT_SECRET,                                                    
             { expiresIn: '1h' }                                            
         );
-        res.status(200).json({ token });
+
+        res.cookie('authToken', token, {
+            httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+            secure: true, // Ensure the cookie is sent only over HTTPS
+            sameSite: 'Strict', // Prevent CSRF attacks
+            maxAge: 3600000 // 1 hour
+        });
+    
+        res.json({ message: 'Login successful' });
+
     } catch (error) {
-        res.status(500).json({ error: 'Login failed' });
+        res.status(500).json({ error: 'Login Failed' });
     }
 });
 
@@ -57,7 +67,7 @@ router.get('/paramedics', async (req, res) => {
 
 router.get('/patient.html', authenticateJWT, (req, res) => {
     try{
-        const { username } = req.user; // req.user is populated by the Middleware function
+        const { username } = req.user; // Extracted by middleware
         res.render('patient.html', {
             username: username
         })
@@ -68,7 +78,7 @@ router.get('/patient.html', authenticateJWT, (req, res) => {
 
 router.get('/paramedic.html', authenticateJWT, (req, res) => {
     try{
-        const { username } = req.user; // req.user is populated by the Middleware function
+        const { username } = req.user; // Extracted by middleware
         res.render('paramedic.html', {
             username: username
         })
@@ -117,18 +127,37 @@ router.get('/emergencies.html', (req, res) => {
     res.render('requests.html');
 })
 
-// Middleware to authenticate JWT
+/* Middleware to authenticate JWT
 function authenticateJWT(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-        return res.status(401).json({ message: 'Token is missing' });
+        return res.status(401).json({ message: 'JWT Token is Missing' });
     }
 
     const token = authHeader.split(' ')[1]; // Extract token from "Bearer <token>"
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ message: 'Invalid or expired token' });
+            return res.status(403).json({ message: 'Invalid or Expired Token' });
+        }
+
+        req.user = user; // Attach user info to the request
+        next();
+    });
+}
+*/
+
+// Middleware to authenticate JWT (checks cookies for the token)
+function authenticateJWT(req, res, next) {
+    const token = req.cookies.authToken; // Extract token from cookies
+
+    if (!token) {
+        return res.status(401).json({ message: 'JWT Token is Missing' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid or Expired Token' });
         }
 
         req.user = user; // Attach user info to the request

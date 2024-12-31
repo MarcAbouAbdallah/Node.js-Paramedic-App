@@ -32,19 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             if (!response.ok) {
-                const error = await response.json();
-                alert(error.message);
+                const message = await response.json();
+                alert(message.error);
                 return;
             }
     
-            const { token } = await response.json();
-            console.log('JWT Token:', token);
+            //const { token } = await response.json();
+            //console.log('JWT Token:', token);
     
             // Store the token securely (localStorage)
-            localStorage.setItem('authToken', token);
+            //localStorage.setItem('authToken', token);
     
             // Make GET request with the token to the appropriate page
             let pageUrl = role === 'patient' ? '/patient.html' : '/paramedic.html';
+
+            /*
             
             // Make the GET request with Authorization header
             const pageResponse = await fetch(pageUrl, {
@@ -60,9 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(error.message);
                 return;
             }
+            */
 
-            console.log('Login attempt:', { username, password, role });
-            alert(`Login attempt for ${role}: ${username}`);
+            window.location.href = pageUrl;
+
+            // Server will render and send the appropriate pages
+            //const pageContent = await pageResponse.text();
+            //document.body.innerHTML = pageContent; // Replace the current page with the server's response
+
         } catch (error) {
             console.error("Login Failed", error);
             alert("Please try login again")
