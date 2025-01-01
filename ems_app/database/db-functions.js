@@ -83,7 +83,7 @@ async function getEmergencies() {
         return emergencies; // Return the data as an array
     } catch (err) {
         console.error(err);
-        throw err; // Rethrow the error to be handled by the caller
+        throw err;
     }
 }
 
@@ -94,6 +94,7 @@ function getPatientHistory(username) {
         requestTime: 1,
         status: 1 
     })
+    .lean() // Converts Mongoose documents to JS objects for compatibility with Handlebars
     .exec()
     .catch(error => {
         console.log(error);
@@ -108,6 +109,7 @@ function getParamedicHistory(username) {
         'location.address': 1,
         requestTime: 1,
     })
+    .lean() // Converts Mongoose documents to JS objects for compatibility with Handlebars
     .exec()
     .catch(error => {
         console.log(error);
