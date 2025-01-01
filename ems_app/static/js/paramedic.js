@@ -24,14 +24,6 @@ axios.get(`/paramedics/info?username=${username}`)
             latitude: paramedicInfo.location.coordinates[1]
         }
 
-        /*display Info
-        document.getElementById("paramedicDetails").innerHTML = `
-            Name: ${paramedicInfo.displayName} <br>
-            Address: ${paramedicInfo.location.address} <br>
-            Phone: ${paramedicInfo.phone}
-            `;
-        */
-
         // Initialize the map
         map = new mapboxgl.Map({
             container: 'map', // ID of HTML element

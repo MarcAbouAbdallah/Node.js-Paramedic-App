@@ -16,9 +16,9 @@
             <h1><i class="fas fa-ambulance"></i> EMS App</h1>
             <nav>
                 <ul>
-                    <li><a href="#" class="active">Dashboard</a></li>
-                    <li><a href="#">Emergency History</a></li>
-                    <li><a href="#">Emergency Map</a></li>
+                    <li><a href="paramedic.html?token={{token}}" class="nav-link" data-page="paramedic">Dashboard</a></li>
+                    <li><a href="paramedic-history.html?token={{token}}" class="nav-link" data-page="paramedic-history">Emergency History</a></li>
+                    <li><a href="emergencies.html?token={{token}}" class="nav-link" data-page="emergencies">Emergency Map</a></li>
                 </ul>
             </nav>
         </div>
@@ -59,6 +59,20 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/static/js/paramedic.js" defer></script>
+
+    <script>
+        // Handle active nav link
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.dataset.page === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>
 

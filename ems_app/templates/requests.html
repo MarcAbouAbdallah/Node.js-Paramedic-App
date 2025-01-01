@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
-    <title>Visualize Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Heat Map - EMS App</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="/static/css/requests.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
+    <div class="background-animation"></div>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-ambulance"></i> EMS App</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{role}}.html?token={{token}}" class="nav-link" data-page="{{role}}">Dashboard</a></li>
+                    <li><a href="{{role}}-history.html?token={{token}}" class="nav-link" data-page="{{role}}-history">Emergency History</a></li>
+                    <li><a href="emergencies.html?token={{token}}" class="nav-link" data-page="emergencies">Emergency Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    <div id="map" style="width: 90%; height: 500px; margin: auto">
-        
+    <div class="container">
+        <main>
+            <section class="map-info">
+                <h2>Emergency Heat Map</h2>
+                <p>This heat map visualizes the concentration of emergency incidents across the area. 
+                   Darker and more intense colors indicate a higher frequency of emergencies, 
+                   helping to identify hotspots and trends in emergency service demands. 
+                   Use this information to better understand the distribution of emergencies and 
+                   potentially improve resource allocation and response times.</p>
+            </section>
+
+            <div id="map"></div>
+        </main>
+        <footer>
+            <p>&copy; 2023 EMS App. All rights reserved.</p>
+        </footer>
     </div>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <!-- JS file for functionality-->
     <script src="/static/js/requests.js" defer></script>
+    <script>
+        // Handle active nav link
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.dataset.page === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
+</html>
 </html>

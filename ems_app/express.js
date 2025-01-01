@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser'); // For storing JWT in cookies
+//const cookieParser = require('cookie-parser'); // For storing JWT in cookies
 const mongoose = require('mongoose'); // mongodb driver for node.js
 const consolidate = require('consolidate'); // library to choose template engine
 const http = require('http');
@@ -14,7 +14,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true })); // middleware to parse the body of requests (req.body)
 app.use(bodyParser.json({ limit: '5mb' }));
-app.use(cookieParser()); // Parse cookies
+//app.use(cookieParser()); // Parse cookies
 
 app.set('views', 'templates');
 app.use('/static', express.static('static'));

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
     
-            //const { token } = await response.json();
+            const { token } = await response.json();
             //console.log('JWT Token:', token);
     
             // Store the token securely (localStorage)
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             */
 
-            window.location.href = pageUrl;
+            window.location.href = pageUrl+`?token=${token}`;
 
             // Server will render and send the appropriate pages
             //const pageContent = await pageResponse.text();

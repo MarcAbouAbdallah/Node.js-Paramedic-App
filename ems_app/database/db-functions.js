@@ -2,6 +2,7 @@ const models = require('./models.js');
 const Paramedic = models.Paramedic;
 const Emergency = models.Emergency;
 
+// Return paramedics within a specific distance
 function getNearestParamedics(coordinates, maxRange) {
     return Paramedic.find({
         location: {
@@ -21,7 +22,7 @@ function getNearestParamedics(coordinates, maxRange) {
 }
 
 
-// Method to return a paramedic's info given username
+// Return paramedic info given username
 function getParamedicInfo(username){
 
     // Mongoose method to get a single instance and return a promise
@@ -86,6 +87,34 @@ async function getEmergencies() {
     }
 }
 
+// Get Emergency history of a patient
+function getPatientHistory(username) {
+    return Emergency.find({ patientId: username }, { 
+        'location.address': 1,
+        requestTime: 1,
+        status: 1 
+    })
+    .exec()
+    .catch(error => {
+        console.log(error);
+        return [];
+    });
+}
+
+// Get Emergency history of a paramedic
+function getParamedicHistory(username) {
+    return Emergency.find({ paramedicId: username }, { 
+        patientId: 1,
+        'location.address': 1,
+        requestTime: 1,
+    })
+    .exec()
+    .catch(error => {
+        console.log(error);
+        return [];
+    });
+}
+
 
 exports.getNearestParamedics = getNearestParamedics;
 exports.getParamedicInfo = getParamedicInfo;
@@ -93,3 +122,5 @@ exports.saveEmergency = saveEmergency;
 exports.updateEmergency = updateEmergency;
 exports.getEmergencies = getEmergencies;
 exports.getEmergency = getEmergency;
+exports.getPatientHistory = getPatientHistory;
+exports.getParamedicHistory = getParamedicHistory;
