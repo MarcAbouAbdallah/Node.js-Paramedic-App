@@ -130,12 +130,12 @@ function convertDateFormat(emergencyDate) {
 function createCustomMarker(url) {
     const element = document.createElement('div');
     element.style.backgroundImage = url;
-    element.style.width = '40px';
+    element.style.width = '45px';
     element.style.height = '40px';
     element.style.backgroundSize = 'contain'; // Make sure the image fits within the element
     element.style.backgroundRepeat = 'no-repeat'; // Prevent repetition
     element.style.backgroundPosition = 'center';
-    element.style.marginTop = '-20px';
-    element.style.marginLeft = '-20px';
+    //element.style.marginTop = '-5px';
+    //element.style.marginLeft = '-5px';
     return element;
 }

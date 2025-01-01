@@ -11,7 +11,7 @@ axios.get("/emergencies/info")
             container: "map",
             style: "mapbox://styles/mapbox/dark-v9",
             center: [-73.610369,45.513182],
-            zoom: 10.5
+            zoom: 11.5
         });
 
         map.on("load", () => {
@@ -35,7 +35,7 @@ axios.get("/emergencies/info")
                             ["accepted", "rgba(0,255,0,0.5)"] // Green for accepted requests
                         ]
                     },
-                    "circle-radius": 10,
+                    "circle-radius": 14,
                     "circle-blur": 1
                 }
             });

@@ -181,30 +181,6 @@ footer {
     color: var(--text-color);
 }
 
-@keyframes heartbeat {
-    0% {
-        transform: scale(0);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-}
-
-.heartbeat {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    animation: heartbeat 2s infinite;
-}
-
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
