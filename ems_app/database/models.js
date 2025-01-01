@@ -53,8 +53,8 @@ const emergencySchema = mongoose.Schema({
         address: { type: String },
         coordinates: [Number]
     },
-    patientId: { type: String },
-    paramedicId: { type: String },
+    patientId: { type: String }, // Patient username
+    paramedicId: { type: String }, // Paramedic username
     status: { type: String } //pending or accepted
 })
 

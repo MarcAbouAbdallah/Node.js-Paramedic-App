@@ -1,13 +1,12 @@
-
 // Mapbox access token
 mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
 
-const socket = io(); //object to emit events to and listen to events from the server
+const socket = io(); // Object to emit events to and listen to events from the server
 const username = document.body.getAttribute("data-username");
 
-socket.emit("join", {username: username}); //join event to join a room named after username
+socket.emit("join", {username: username}); // Join event to join a room named after username
 
-// Default Data (Updated later when user interacts with map)
+// Default data (Updated later when user interacts with map)
 let emergencyDetails = {
     patientId: username,
     location: {
@@ -32,8 +31,8 @@ socket.on("request-accepted", (paramedicInfo) => {
 
     const notification = document.getElementById("notification");
     notification.textContent = `
-    ${paramedicDetails.username} is en route from ${paramedicDetails.location.address} and will reach you shortly. 
-    For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}`
+    Paramedic ${paramedicDetails.username} is en route from ${paramedicDetails.location.address} and will reach you shortly. 
+    For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}.`
     notification.style.display = "block"
 
     // Add a marker to show paramedic's location
