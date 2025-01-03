@@ -19,7 +19,7 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden;
-    padding-top: 60px; /* Add padding to account for fixed header */
+    padding-top: 60px;
 }
 
 .background-animation {
@@ -93,7 +93,7 @@ nav ul li a.active {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 60px); /* Adjust for header height */
+    min-height: calc(100vh - 60px);
 }
 
 main {
@@ -184,6 +184,6 @@ footer {
     }
 
     body {
-        padding-top: 100px; /* Adjust for taller header on mobile */
+        padding-top: 100px;
     }
 }

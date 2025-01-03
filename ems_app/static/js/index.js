@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         const role = patientToggle.classList.contains('active') ? 'patient' : 'paramedic';
 
-        // Here you would typically send a request to your server to authenticate
         try {
             // Send login request to the server
             const response = await fetch('/login', {
@@ -38,37 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             const { token } = await response.json();
-            //console.log('JWT Token:', token);
     
-            // Store the token securely (localStorage)
-            //localStorage.setItem('authToken', token);
-    
-            // Make GET request with the token to the appropriate page
+            // Page redirection based on role
             let pageUrl = role === 'patient' ? '/patient.html' : '/paramedic.html';
 
-            /*
-            
-            // Make the GET request with Authorization header
-            const pageResponse = await fetch(pageUrl, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-    
-            // Check if the request was successful
-            if (!pageResponse.ok) {
-                const error = await pageResponse.json();
-                alert(error.message);
-                return;
-            }
-            */
-
             window.location.href = pageUrl+`?token=${token}`;
-
-            // Server will render and send the appropriate pages
-            //const pageContent = await pageResponse.text();
-            //document.body.innerHTML = pageContent; // Replace the current page with the server's response
 
         } catch (error) {
             console.error("Login Failed", error);
@@ -76,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Background animation
+
+    // UI Background animation
     function createHeartbeat() {
         const heartbeat = document.createElement('div');
         heartbeat.classList.add('heartbeat');

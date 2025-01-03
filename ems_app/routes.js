@@ -11,46 +11,7 @@ const Patient = models.Patient;
 
 JWT_SECRET = 'my_secret_token'
 
-/* COMMENTED FOR NOW
-// Login (JWT)
-router.post('/login', async (req, res) => {
-    try {
-        const { username, password, role } = req.body;
-        let user;
-        if (role === "patient"){
-            user = await Patient.findOne({ username });
-        }
-        else if (role === "paramedic") {
-            user = await Paramedic.findOne({ username });
-        }
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid Username' });
-        }
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Invalid Password' });
-        }
-        // Generate a JWT
-        const token = jwt.sign(
-            { userId: user._id, username: user.username, role: role }, 
-            JWT_SECRET,                                                    
-            { expiresIn: '1h' }                                            
-        );
 
-        res.cookie('authToken', token, {
-            httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-            secure: true, // Ensure the cookie is sent only over HTTPS
-            sameSite: 'Strict', // Prevent CSRF attacks
-            maxAge: 3600000 // 1 hour
-        });
-    
-        res.json({ message: 'Login successful' });
-
-    } catch (error) {
-        res.status(500).json({ error: 'Login Failed' });
-    }
-});
-*/
 // Login (JWT)
 router.post('/login', async (req, res) => {
     try {
@@ -84,7 +45,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-// Fetch nearest paramedics given lat and lgn as query parameters
+// Fetch nearest paramedics given lat and lgn (within 2 km)
 router.get('/paramedics', async (req, res) => {
 
     // Request object query parameters
@@ -98,55 +59,67 @@ router.get('/paramedics', async (req, res) => {
     });
 });
 
-/*
-router.get('/patient.html', authenticateJWT, (req, res) => {
-    try{
-        const { username } = req.user; // Extracted by middleware
-        res.render('patient.html', {
-            username: username
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Error loading patient page"})
-    }
+
+// Get paramedic details given username
+router.get('/paramedics/info', async (req, res) => {
+    const paramedicDetails = await dbFunctions.getParamedicInfo(req.query.username);
+
+    res.json({
+        paramedicDetails: paramedicDetails
+    })
 })
 
-router.get('/paramedic.html', authenticateJWT, (req, res) => {
-    try{
-        const { username } = req.user; // Extracted by middleware
-        res.render('paramedic.html', {
-            username: username
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Error loading paramedic page"})
+
+// Get all emergencies and convert them to GeoJSON (for heat map rendering)
+router.get('/emergencies/info', async (req, res) => {
+    const emergencies = await dbFunctions.getEmergencies();
+    const geojson_emergencies = [];
+
+    for (let i = 0; i < emergencies.length; i++) {
+        geojson_emergencies.push(
+            {
+                type: "Feature",
+                geometry: {
+                    type: "Point", coordinates: emergencies[i].location.coordinates
+                },
+                properties: { status: emergencies[i].status, requestTime: emergencies[i].requestTime, address: emergencies[i].address }
+
+            })
     }
-})
-*/
-router.get('/patient.html', authenticateJWT, (req, res) => {
-    try{
-        const { username } = req.user; // Extracted by middleware
-        res.render('patient.html', {
-            username: username,
-            token: req.query.token
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Error loading patient page"})
-    }
+
+    const geojson = { type: "FeatureCollection", features: geojson_emergencies };
+    res.json(geojson);
 })
 
-router.get('/paramedic.html', authenticateJWT, (req, res) => {
-    try{
-        const { username } = req.user; // Extracted by middleware
-        res.render('paramedic.html', {
-            username: username,
-            token: req.query.token
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Error loading paramedic page"})
-    }
-})
+
+// Page Rendering Endpoints
 
 router.get('/', (req, res) => {
     res.render('index.html')
+})
+
+router.get('/patient.html', authenticateJWT, (req, res) => {
+    try{
+        const { username } = req.user; // Extracted by middleware
+        res.render('patient.html', {
+            username: username,
+            token: req.query.token
+        })
+    } catch (error) {
+        res.status(500).json({ message: "Error loading patient page"})
+    }
+})
+
+router.get('/paramedic.html', authenticateJWT, (req, res) => {
+    try{
+        const { username } = req.user; // Extracted by middleware
+        res.render('paramedic.html', {
+            username: username,
+            token: req.query.token
+        })
+    } catch (error) {
+        res.status(500).json({ message: "Error loading paramedic page"})
+    }
 })
 
 router.get('/patient-history.html', authenticateJWT, async (req, res) => {
@@ -177,39 +150,7 @@ router.get('/paramedic-history.html', authenticateJWT, async (req, res) => {
     }
 })
 
-
-// Get paramedic details given username
-router.get('/paramedics/info', async (req, res) => {
-    const paramedicDetails = await dbFunctions.getParamedicInfo(req.query.username);
-
-    res.json({
-        paramedicDetails: paramedicDetails
-    })
-})
-
-// Get all emergencies and convert them to GeoJSON (for heat map)
-router.get('/emergencies/info', async (req, res) => {
-    const emergencies = await dbFunctions.getEmergencies();
-    const geojson_emergencies = [];
-
-    for (let i = 0; i < emergencies.length; i++) {
-        geojson_emergencies.push(
-            {
-                type: "Feature",
-                geometry: {
-                    type: "Point", coordinates: emergencies[i].location.coordinates
-                },
-                properties: { status: emergencies[i].status, requestTime: emergencies[i].requestTime, address: emergencies[i].address }
-
-            })
-    }
-
-    const geojson = { type: "FeatureCollection", features: geojson_emergencies };
-    res.json(geojson);
-})
-
-
-// Render heat map page
+// Heat map page
 router.get('/emergencies.html', authenticateJWT, (req, res) => {
     try{
         const { role } = req.user; // Extracted by middleware
@@ -223,48 +164,7 @@ router.get('/emergencies.html', authenticateJWT, (req, res) => {
 })
 
 
-
-/* Middleware to authenticate JWT
-function authenticateJWT(req, res, next) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        return res.status(401).json({ message: 'JWT Token is Missing' });
-    }
-
-    const token = authHeader.split(' ')[1]; // Extract token from "Bearer <token>"
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Invalid or Expired Token' });
-        }
-
-        req.user = user; // Attach user info to the request
-        next();
-    });
-}
-*/
-
-/* COMMENTED FOR NOW
-// Middleware to authenticate JWT (checks cookies for the token)
-function authenticateJWT(req, res, next) {
-    const token = req.cookies.authToken; // Extract token from cookies
-
-    if (!token) {
-        return res.status(401).json({ message: 'JWT Token is Missing' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Invalid or Expired Token' });
-        }
-
-        req.user = user; // Attach user info to the request
-        next();
-    });
-}
-*/
-
-// Middleware to authenticate JWT (checks cookies for the token)
+// Helper function: Middleware to authenticate JWT
 function authenticateJWT(req, res, next) {
     const token = req.query.token; // Extract token
 

@@ -15,7 +15,7 @@ axios.get("/emergencies/info")
         });
 
         map.on("load", () => {
-            // Add a new source from our GeoJSON data and set the 'cluster' option to true.
+            // Add a new source from the GeoJSON data and set the 'cluster' option to true.
             map.addSource("emergency-requests", {
                 type: "geojson",
                 data: res.data

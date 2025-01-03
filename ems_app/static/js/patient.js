@@ -29,10 +29,12 @@ socket.on("request-accepted", (paramedicInfo) => {
     paramedicDetails = paramedicInfo;
     console.log(`Paramedic ${paramedicDetails.username} accepted your emergency request`)
 
+    // Update Notification
     const notification = document.getElementById("notification");
-    notification.textContent = `
-    Paramedic ${paramedicDetails.username} is en route from ${paramedicDetails.location.address} and will reach you shortly. 
-    For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}.`
+    notification.innerHTML = `
+    <i class="fas fa-ambulance" style="color: #e74c3c;"></i> Paramedic ${paramedicDetails.username} is en route from 
+    <span style="text-decoration: underline;"> ${paramedicDetails.location.address}</span> and will reach you shortly. <br>
+    <i class="fas fa-phone" style="color: #e74c3c;"></i> For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}.`
     notification.style.display = "block"
 
     // Add a marker to show paramedic's location
@@ -68,7 +70,7 @@ const geocoder = new MapboxGeocoder({
     bbox: [-73.7077, 45.4215, -73.5145, 45.5773] // bounding box for search area
 });
 
-// Add the geocoder to the map
+// Add geocoder to the map
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 

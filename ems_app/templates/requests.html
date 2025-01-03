@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emergency Heat Map - EMS App</title>
+    <title>Emergency Heat Map - QuickAid MTL</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <link rel="stylesheet" href="/static/css/requests.css">
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
     <div class="background-animation"></div>
     <header>
         <div class="header-content">
-            <h1><i class="fas fa-ambulance"></i> EMS App</h1>
+            <h1><i class="fas fa-ambulance"></i> QuickAid MTL</h1>
             <nav>
                 <ul>
                     <li><a href="{{role}}.html?token={{token}}" class="nav-link" data-page="{{role}}">Dashboard</a></li>
@@ -27,18 +27,19 @@
     <div class="container">
         <main>
             <section class="map-info">
-                <h2>Emergency Heat Map</h2>
-                <p>This heat map visualizes the concentration of emergency incidents across the area. 
-                   Darker and more intense colors indicate a higher frequency of emergencies, 
-                   helping to identify hotspots and trends in emergency service demands. 
-                   Use this information to better understand the distribution of emergencies and 
-                   potentially improve resource allocation and response times.</p>
+                <h2><i class="fas fa-exclamation-circle"></i> Emergency Heat Map</h2>
+                <p>
+                    Track the status of emergencies across Montreal with our intuitive heat map, updated in real-time to show areas of highest urgency.<br> <br>
+                    <span style="font-weight: bold;">🟥 Red spots</span> represent <strong>pending emergencies</strong>, highlighting areas where immediate attention is needed.<br>
+                    <span style="font-weight: bold;">🟩 Green spots</span> represent <strong>accepted emergencies</strong>, where paramedics are already en route.<br> <br>
+                    Stay informed and help us ensure faster response times <i class="fas fa-clock"></i> <br>
+                  </p>
             </section>
 
             <div id="map"></div>
         </main>
         <footer>
-            <p>&copy; 2023 EMS App. All rights reserved.</p>
+            <p>© 2025 QuickAid MTL | Built with care by <strong>Marc Abou Abdallah</strong></p>
         </footer>
     </div>
 

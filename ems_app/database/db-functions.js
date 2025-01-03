@@ -53,7 +53,7 @@ function saveEmergency(requestId, requestTime, location, patientId, status){
 
 }
 
-// Update emergency status after request is accepted
+// Update emergency after request is accepted
 function updateEmergency(emergencyId, paramedicId, status){
     return Emergency.findOneAndUpdate({"_id": emergencyId }, {
         //details to udpate
@@ -62,7 +62,7 @@ function updateEmergency(emergencyId, paramedicId, status){
     }).catch(error => {console.log(error)})
 }
 
-// Fetch a specific emergency instance
+// Fetch a specific emergency
 function getEmergency(emergencyId) {
     return Emergency.findOne({"_id": emergencyId
     }).catch(error => {console.log(error)})

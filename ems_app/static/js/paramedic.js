@@ -9,11 +9,10 @@ const emergencyRequestsTable = document.getElementById('emergency-requests').get
 socket.emit("join", { username: username }); // Send a join signal to the server to join a room named after username
 
 
-/* Axios API to make Http requests
-Get request to retrieve paramedic info and initialize map location*/
 let paramedicInfo = {};
 let map = {};
 
+// Request to retrieve paramedic info and initialize location on map
 axios.get(`/paramedics/info?username=${username}`)
     .then((res) => {
         paramedicInfo = res.data.paramedicDetails;
@@ -53,8 +52,11 @@ socket.on("emergency-request", (emergencyInfo) => {
 
     // Latest notification
     notificationElement.innerHTML =
-        `Urgent: Patient ${emergencyInfo.patientId} needs assistance immediately\! <br>
-    Location: ${emergencyInfo.location.address}`
+        `<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+        Urgent: Patient ${emergencyInfo.patientId} needs assistance immediately\! <br>
+
+        <i class="fas fa-map-marker-alt" style="color: #e74c3c;"></i>
+        Location: ${emergencyInfo.location.address}`
 
     // Marker to show the new emergency location
     new mapboxgl.Marker({
@@ -105,7 +107,8 @@ function AcceptHelp(emergencyId, patientName) {
     acceptButton.classList.add('accepted-btn');
 
     // Update the notification
-    notificationElement.textContent = `You have accepted the emergency of patient ${patientName}!`;
+    notificationElement.innerHTML = `<i class="fas fa-check-circle" style="color: #27ae60;"></i>
+                                        You have accepted the emergency of patient ${patientName}!`;
 }
 
 
@@ -125,7 +128,6 @@ function convertDateFormat(emergencyDate) {
     return readableDate
 }
 
-
 // Helper method to create a custom marker
 function createCustomMarker(url) {
     const element = document.createElement('div');
@@ -135,7 +137,5 @@ function createCustomMarker(url) {
     element.style.backgroundSize = 'contain'; // Make sure the image fits within the element
     element.style.backgroundRepeat = 'no-repeat'; // Prevent repetition
     element.style.backgroundPosition = 'center';
-    //element.style.marginTop = '-5px';
-    //element.style.marginLeft = '-5px';
     return element;
 }

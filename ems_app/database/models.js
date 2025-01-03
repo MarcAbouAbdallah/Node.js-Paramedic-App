@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+// PATIENT MODEL
 const patientSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true }
@@ -19,6 +20,7 @@ patientSchema.pre('save', async function (next) {
 const Patient = mongoose.model('Patient', patientSchema); // Create Mongoose Model based off schema
 
 
+// PARAMEDIC MODEL
 const paramedicSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
@@ -47,6 +49,7 @@ paramedicSchema.index({ "location": "2dsphere", username: 1 }); // Geospatial in
 const Paramedic = mongoose.model('Paramedic', paramedicSchema);
 
 
+// EMERGENCY MODEL
 const emergencySchema = mongoose.Schema({
     requestTime: { type: Date },
     location: {

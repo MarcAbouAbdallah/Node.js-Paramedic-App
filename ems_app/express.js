@@ -12,7 +12,7 @@ const socketServer = require('./socket_server_side');
 const app = express();
 
 
-app.use(bodyParser.urlencoded({ extended: true })); // middleware to parse the body of requests (req.body)
+app.use(bodyParser.urlencoded({ extended: true })); // Middleware to parse the body of requests (req.body)
 app.use(bodyParser.json({ limit: '5mb' }));
 //app.use(cookieParser()); // Parse cookies
 
@@ -31,11 +31,11 @@ mongoose.connect(db).then(value => {
 });
 
 
-const server = http.Server(app); //http server with Express app
+const server = http.Server(app);
 const portNumber = 8000;
 
 server.listen(portNumber, () => {
     console.log(`Server listening at port ${portNumber}`);
-    socketServer.setUp(server); // Call function to set up SocketIO server
+    socketServer.setUp(server); // Function to set up SocketIO server
 });
 
