@@ -4,12 +4,15 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const dbFunctions = require('./database/db-functions.js');
 const models = require('./database/models.js');
 const Paramedic = models.Paramedic;
 const Patient = models.Patient;
 
-JWT_SECRET = 'my_secret_token'
+// Env variables for secrets
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 // Login (JWT)
@@ -103,7 +106,8 @@ router.get('/patient.html', authenticateJWT, (req, res) => {
         const { username } = req.user; // Extracted by middleware
         res.render('patient.html', {
             username: username,
-            token: req.query.token
+            token: req.query.token,
+            mapboxToken: mapboxToken
         })
     } catch (error) {
         res.status(500).json({ message: "Error loading patient page"})
@@ -115,7 +119,8 @@ router.get('/paramedic.html', authenticateJWT, (req, res) => {
         const { username } = req.user; // Extracted by middleware
         res.render('paramedic.html', {
             username: username,
-            token: req.query.token
+            token: req.query.token,
+            mapboxToken: mapboxToken
         })
     } catch (error) {
         res.status(500).json({ message: "Error loading paramedic page"})
@@ -156,7 +161,8 @@ router.get('/emergencies.html', authenticateJWT, (req, res) => {
         const { role } = req.user; // Extracted by middleware
         res.render('requests.html', {
             role: role,
-            token: req.query.token
+            token: req.query.token,
+            mapboxToken: mapboxToken
         })
     } catch (error) {
         res.status(500).json({ message: "Error loading emergency heat map page"})
