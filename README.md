@@ -1,9 +1,9 @@
 # QuickAid MTL 🚑
 
-Welcome to QuickAid MTL, an Emergency Medical Service (EMS) platform designed to connect people in need of urgent medical help with nearby paramedics in the Montreal area. The app ensures fast response times through real-time communication using WebSockets, allowing both patients and paramedics to receive immediate alerts and updates.
+Welcome to QuickAid MTL, an Emergency Medical Service (EMS) full-stack app designed to connect people in need of urgent medical help with nearby paramedics in the Montreal area. With real-time communication powered by WebSockets, QuickAid MTL ensures swift response times by delivering immediate alerts and updates to both patients and paramedics.
 
 ## 🎬 **Demo Video**
-👉 **[Watch the demo video here!](https://youtu.be/OSspQKkfC3A)** 🌟 
+👉 **[Watch the demo video here !!](https://youtu.be/OSspQKkfC3A)** 🌟 
 
 ---
 
