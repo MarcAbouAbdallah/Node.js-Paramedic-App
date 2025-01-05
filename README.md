@@ -18,13 +18,20 @@ Welcome to QuickAid MTL, an Emergency Medical Service (EMS) platform designed to
 
 ---
 
-## 🚀 **Features**
+## 🚀 **Features**  
 
-- **Real-time Alerts**: Notifications are sent instantly using WebSockets to alert patients and paramedics.
-- **Location-based Emergency**: Geospatial indexes in MongoDB and interactive MapBox maps (autocomplete geocoder, markers, etc.) track user locations for nearby emergencies, with paramedics being alerted only within a 2 km range.
-- **Authentication & Security**: JWT for secure authentication and bcrypt for password hashing.
-- **Heat Map**: Displays a heat map to show the density and patterns of pending and accepted requests.
-- **MongoDB**: Stores emergency information and tracks patient and paramedic history.
+- **Real-time Alerts**  
+  Notifications are sent instantly using **WebSockets** to alert patients and paramedics.  
 
----
+- **Location-based Emergency**  
+  Geospatial indexes in **MongoDB** and interactive **MapBox** maps (autocomplete geocoder, markers, etc.) track user locations for nearby emergencies, with paramedics being alerted only within a 2 km range.  
+
+- **Authentication & Security**  
+  **JWT** for secure authentication and **bcrypt** for password hashing.  
+
+- **Heat Map**  
+  Displays a heat map to show the density and patterns of pending and accepted requests.  
+
+- **MongoDB**  
+  Stores emergency information and tracks patient and paramedic history.
 
