@@ -1,15 +1,15 @@
-
 // Mapbox access token
-mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
+const mapElement = document.getElementById('map');
+mapboxgl.accessToken = mapElement.getAttribute("data-mapboxtoken");
 
-const socket = io(); //object to emit events to and listen to events from the server
-const userId = document.body.getAttribute("data-userId");
+const socket = io(); // Object to emit events to and listen to events from the server
+const username = document.body.getAttribute("data-username");
 
-socket.emit("join", {userId: userId}); //join event to join a room named after userId
+socket.emit("join", {username: username}); // Join event to join a room named after username
 
-// Default Data (Updated later when user interacts with map)
+// Default data (Updated later when user interacts with map)
 let emergencyDetails = {
-    patientId: userId,
+    patientId: username,
     location: {
         address: "Montreal Museum of Fine Arts, 1380 Sherbrooke St W, Montreal, QC H3G 1J5, Canada",
         longitude: -73.5804,
@@ -28,12 +28,14 @@ function requestHelp() {
 let paramedicDetails = {};
 socket.on("request-accepted", (paramedicInfo) => {
     paramedicDetails = paramedicInfo;
-    console.log(`Paramedic ${paramedicDetails.userId} accepted your emergency request`)
+    console.log(`Paramedic ${paramedicDetails.username} accepted your emergency request`)
 
+    // Update Notification
     const notification = document.getElementById("notification");
-    notification.textContent = `
-    ${paramedicDetails.displayName} is en route from ${paramedicDetails.location.address} and will reach you shortly. 
-    For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}`
+    notification.innerHTML = `
+    <i class="fas fa-ambulance" style="color: #e74c3c;"></i> Paramedic ${paramedicDetails.username} is en route from 
+    <span style="text-decoration: underline;"> ${paramedicDetails.location.address}</span> and will reach you shortly. <br>
+    <i class="fas fa-phone" style="color: #e74c3c;"></i> For any urgent inquiries, please contact them directly at ${paramedicDetails.phone}.`
     notification.style.display = "block"
 
     // Add a marker to show paramedic's location
@@ -69,7 +71,7 @@ const geocoder = new MapboxGeocoder({
     bbox: [-73.7077, 45.4215, -73.5145, 45.5773] // bounding box for search area
 });
 
-// Add the geocoder to the map
+// Add geocoder to the map
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 
@@ -91,17 +93,17 @@ geocoder.on('result', (e) => {
 
 
 
-//Method to create a custom marker
+// Method to create a custom marker
 function createCustomMarker(url) {
     const element = document.createElement('div');
     element.style.backgroundImage = url;
     element.style.width = '40px';
-    element.style.height = '40px';
+    element.style.height = '45px';
     element.style.backgroundSize = 'contain'; // Make sure the image fits within the element
     element.style.backgroundRepeat = 'no-repeat'; // Prevent repetition
     element.style.backgroundPosition = 'center';
-    element.style.marginTop = '-20px';
-    element.style.marginLeft = '-20px';
+    //element.style.marginTop = '-20px';
+    //element.style.marginLeft = '-20px';
     return element;
 }
 

@@ -1,36 +1,27 @@
-
 // Mapbox access token
-mapboxgl.accessToken = "pk.eyJ1IjoibWFyY2FhIiwiYSI6ImNtMjlxMHk0ODA4ZDMyaXB6ZDg3cWZ6cDcifQ.C3FHC7grg9-1kMoFCEcXEQ";
+const mapElement = document.getElementById('map');
+mapboxgl.accessToken = mapElement.getAttribute("data-mapboxtoken");
 
-const socket = io(); //object to emit events to and listen to events from the server
-const userId = document.body.getAttribute("data-userId");
+const socket = io(); // object to emit events to and listen to events from the server
+const username = document.body.getAttribute("data-username");
 const notificationElement = document.getElementById('notification');
 const emergencyRequestsTable = document.getElementById('emergency-requests').getElementsByTagName('tbody')[0];
 
-socket.emit("join", {userId: userId}); //Send a join signal to the server to join a room named after userId
+socket.emit("join", { username: username }); // Send a join signal to the server to join a room named after username
 
 
-/* Axios API to make Http requests
-Get request to retrieve paramedic info, display it and set map location*/
 let paramedicInfo = {};
 let map = {};
 
-axios.get(`/paramedics/info?userId=${userId}`)
-    .then( (res) => {
+// Request to retrieve paramedic info and initialize location on map
+axios.get(`/paramedics/info?username=${username}`)
+    .then((res) => {
         paramedicInfo = res.data.paramedicDetails;
         paramedicInfo.location = {
             address: paramedicInfo.location.address,
             longitude: paramedicInfo.location.coordinates[0],
             latitude: paramedicInfo.location.coordinates[1]
         }
-
-        /*display Info
-        document.getElementById("paramedicDetails").innerHTML = `
-            Name: ${paramedicInfo.displayName} <br>
-            Address: ${paramedicInfo.location.address} <br>
-            Phone: ${paramedicInfo.phone}
-            `;
-        */
 
         // Initialize the map
         map = new mapboxgl.Map({
@@ -42,43 +33,55 @@ axios.get(`/paramedics/info?userId=${userId}`)
 
         // Add a marker at the initial position
         const marker = new mapboxgl.Marker()
-        .setLngLat([paramedicInfo.location.longitude, paramedicInfo.location.latitude])
-        .addTo(map);
+            .setLngLat([paramedicInfo.location.longitude, paramedicInfo.location.latitude])
+            .addTo(map);
 
     })
     .catch((error) => {
         console.log(error)
-     })
+    })
 
 
-    
+
 // Listen to "emergency-request" event from the server
 let emergencyDetails = {};
 
 socket.on("emergency-request", (emergencyInfo) => {
 
-    console.log(`Paramedic ${userId} received the emergency request`)
+    console.log(`Paramedic ${username} received the emergency request`)
     console.log(`EMERGENCY ${JSON.stringify(emergencyInfo)}`)
 
     // Latest notification
-    notificationElement.innerHTML = 
-    `Urgent: Patient ${emergencyInfo.patientId} needs assistance immediately\! <br>
-    Location: ${emergencyInfo.location.address}`
+    notificationElement.innerHTML =
+        `<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+        Urgent: Patient ${emergencyInfo.patientId} needs assistance immediately\! <br>
+
+        <i class="fas fa-map-marker-alt" style="color: #e74c3c;"></i>
+        Location: ${emergencyInfo.location.address}`
 
     // Marker to show the new emergency location
     new mapboxgl.Marker({
         element: createCustomMarker('url(/static/images/patient.png)'), // Custom patient marker
     })
-    .setLngLat([emergencyInfo.location.longitude, emergencyInfo.location.latitude])
-    .addTo(map);
+        .setLngLat([emergencyInfo.location.longitude, emergencyInfo.location.latitude])
+        .addTo(map);
+
+    const readableDate = convertDateFormat(emergencyInfo.emergencyTime) // Convert Date format
 
     // Add new row to the emergency table
     const newRow = emergencyRequestsTable.insertRow();
     newRow.innerHTML = `
         <td>${emergencyInfo.patientId}</td>
         <td>${emergencyInfo.location.address}</td>
-        <td>${emergencyInfo.emergencyTime}</td>
-        <td><button class="accept-btn" data-emergency-id="${emergencyInfo.emergencyId}">Accept</button></td>
+        <td>${readableDate}</td>
+        <td>
+            <button 
+                class="accept-btn" 
+                data-emergency-id="${emergencyInfo.emergencyId}" 
+                data-patient-name="${emergencyInfo.patientId}">
+                Accept
+            </button>
+        </td>
     `;
 
 })
@@ -86,13 +89,13 @@ socket.on("emergency-request", (emergencyInfo) => {
 // Accept buttons
 emergencyRequestsTable.addEventListener('click', (event) => {
     if (event.target.classList.contains('accept-btn')) {
-        AcceptHelp(event.target.getAttribute('data-emergency-id'));
+        AcceptHelp(event.target.getAttribute('data-emergency-id'), event.target.getAttribute('data-patient-name'));
     }
 });
 
 
 // Send a "request-accepted" signal to the server
-function AcceptHelp(emergencyId){
+function AcceptHelp(emergencyId, patientName) {
     socket.emit("request-accepted", {
         emergencyId: emergencyId,
         paramedicInfo: paramedicInfo
@@ -105,20 +108,35 @@ function AcceptHelp(emergencyId){
     acceptButton.classList.add('accepted-btn');
 
     // Update the notification
-    notificationElement.textContent = `You have accepted the emergency with Id ${emergencyId}`;
+    notificationElement.innerHTML = `<i class="fas fa-check-circle" style="color: #27ae60;"></i>
+                                        You have accepted the emergency of patient ${patientName}!`;
 }
 
 
-//Helper method to create a custom marker
+// Helper method to convert date Format 
+function convertDateFormat(emergencyDate) {
+    const date = new Date(emergencyDate)
+    // Format the date to a more readable format
+    const readableDate = date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short"
+    });
+    return readableDate
+}
+
+// Helper method to create a custom marker
 function createCustomMarker(url) {
     const element = document.createElement('div');
     element.style.backgroundImage = url;
-    element.style.width = '40px';
+    element.style.width = '45px';
     element.style.height = '40px';
     element.style.backgroundSize = 'contain'; // Make sure the image fits within the element
     element.style.backgroundRepeat = 'no-repeat'; // Prevent repetition
     element.style.backgroundPosition = 'center';
-    element.style.marginTop = '-20px';
-    element.style.marginLeft = '-20px';
     return element;
 }

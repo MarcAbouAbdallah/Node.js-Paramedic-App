@@ -11,8 +11,8 @@ function setUp(server) {
     io.on('connection', (socket) => { // Listener for new connections from client-side. Socket represents a user session 
 
         socket.on('join', (data) => {
-            socket.join(data.userId); // Socket joins a room named after userId to allow private communication between server and client with the given Id.
-            console.log(`User joined room: ${data.userId}`);
+            socket.join(data.username); // Socket joins a room named after username to allow private communication between server and client with the given username.
+            console.log(`User joined room: ${data.username}`);
         });
         
 
@@ -42,8 +42,8 @@ function setUp(server) {
                 /* io.sockets accesses all connected instances 
                 .in() targets only the rooms with the nearest paramedics */
 
-                console.log(`Sending emergency request to Paramedic ${paramedics[i].userId} located at ${paramedics[i].location.address}`);
-                io.sockets.in(paramedics[i].userId).emit("emergency-request", emergencyInfo);
+                console.log(`Sending emergency request to Paramedic ${paramedics[i].username} located at ${paramedics[i].location.address}`);
+                io.sockets.in(paramedics[i].username).emit("emergency-request", emergencyInfo);
             }
         })
 
@@ -56,10 +56,10 @@ function setUp(server) {
             emergencyInfo = await dbFunctions.getEmergency(emergencyId)
 
             // Update details of the emergency instance
-            await dbFunctions.updateEmergency(emergencyId, info.paramedicInfo.userId, "accepted");
+            await dbFunctions.updateEmergency(emergencyId, info.paramedicInfo.username, "accepted");
 
             // Fire a "request-accepted" signal in the patient room and send paramedic details to display
-            console.log(`Paramedic ${info.paramedicInfo.userId} accepted the request`)
+            console.log(`Paramedic ${info.paramedicInfo.username} accepted the request`)
             io.sockets.in(emergencyInfo.patientId).emit("request-accepted", info.paramedicInfo);
         })
 

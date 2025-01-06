@@ -2,6 +2,7 @@ const models = require('./models.js');
 const Paramedic = models.Paramedic;
 const Emergency = models.Emergency;
 
+// Return paramedics within a specific distance
 function getNearestParamedics(coordinates, maxRange) {
     return Paramedic.find({
         location: {
@@ -21,14 +22,13 @@ function getNearestParamedics(coordinates, maxRange) {
 }
 
 
-// Method to return a paramedic's info given userId
-function getParamedicInfo(Id){
+// Return paramedic info given username
+function getParamedicInfo(username){
 
     // Mongoose method to get a single instance and return a promise
-    return Paramedic.findOne({ userId: Id }, { 
+    return Paramedic.findOne({ username: username }, { 
         // fields to return
-        userId: 1,
-        displayName: 1,
+        username: 1,
         phone: 1,
         location: 1  
     })
@@ -53,7 +53,7 @@ function saveEmergency(requestId, requestTime, location, patientId, status){
 
 }
 
-// Update emergency status after request is accepted
+// Update emergency after request is accepted
 function updateEmergency(emergencyId, paramedicId, status){
     return Emergency.findOneAndUpdate({"_id": emergencyId }, {
         //details to udpate
@@ -62,7 +62,7 @@ function updateEmergency(emergencyId, paramedicId, status){
     }).catch(error => {console.log(error)})
 }
 
-// Fetch a specific emergency instance
+// Fetch a specific emergency
 function getEmergency(emergencyId) {
     return Emergency.findOne({"_id": emergencyId
     }).catch(error => {console.log(error)})
@@ -83,8 +83,38 @@ async function getEmergencies() {
         return emergencies; // Return the data as an array
     } catch (err) {
         console.error(err);
-        throw err; // Rethrow the error to be handled by the caller
+        throw err;
     }
+}
+
+// Get Emergency history of a patient
+function getPatientHistory(username) {
+    return Emergency.find({ patientId: username }, { 
+        'location.address': 1,
+        requestTime: 1,
+        status: 1 
+    })
+    .lean() // Converts Mongoose documents to JS objects for compatibility with Handlebars
+    .exec()
+    .catch(error => {
+        console.log(error);
+        return [];
+    });
+}
+
+// Get Emergency history of a paramedic
+function getParamedicHistory(username) {
+    return Emergency.find({ paramedicId: username }, { 
+        patientId: 1,
+        'location.address': 1,
+        requestTime: 1,
+    })
+    .lean() // Converts Mongoose documents to JS objects for compatibility with Handlebars
+    .exec()
+    .catch(error => {
+        console.log(error);
+        return [];
+    });
 }
 
 
@@ -94,3 +124,5 @@ exports.saveEmergency = saveEmergency;
 exports.updateEmergency = updateEmergency;
 exports.getEmergencies = getEmergencies;
 exports.getEmergency = getEmergency;
+exports.getPatientHistory = getPatientHistory;
+exports.getParamedicHistory = getParamedicHistory;
